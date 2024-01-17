@@ -1,4 +1,9 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using SynetraApi.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<SynetraApiContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SynetraApiContext") ?? throw new InvalidOperationException("Connection string 'SynetraApiContext' not found.")));
 
 // Add services to the container.
 
