@@ -12,9 +12,9 @@ namespace SynetraApi.Controllers
 {
     public class ParcsController : Controller
     {
-        private readonly SynetraApiContext _context;
+        private readonly DataContext _context;
 
-        public ParcsController(SynetraApiContext context)
+        public ParcsController(DataContext context)
         {
             _context = context;
         }
@@ -22,7 +22,7 @@ namespace SynetraApi.Controllers
         // GET: Parcs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Parcs.ToListAsync());
+            return View(await _context.Parc.ToListAsync());
         }
 
         // GET: Parcs/Details/5
@@ -33,14 +33,14 @@ namespace SynetraApi.Controllers
                 return NotFound();
             }
 
-            var parcs = await _context.Parcs
+            var parc = await _context.Parc
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (parcs == null)
+            if (parc == null)
             {
                 return NotFound();
             }
 
-            return View(parcs);
+            return View(parc);
         }
 
         // GET: Parcs/Create
@@ -54,15 +54,15 @@ namespace SynetraApi.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,IsActive,IsEnable,CreatedDate,UpdatedDate")] Parcs parcs)
+        public async Task<IActionResult> Create([Bind("Id,Name,IsActive,IsEnable,CreatedDate,UpdatedDate")] Parc parc)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(parcs);
+                _context.Add(parc);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(parcs);
+            return View(parc);
         }
 
         // GET: Parcs/Edit/5
@@ -73,12 +73,12 @@ namespace SynetraApi.Controllers
                 return NotFound();
             }
 
-            var parcs = await _context.Parcs.FindAsync(id);
-            if (parcs == null)
+            var parc = await _context.Parc.FindAsync(id);
+            if (parc == null)
             {
                 return NotFound();
             }
-            return View(parcs);
+            return View(parc);
         }
 
         // POST: Parcs/Edit/5
@@ -86,9 +86,9 @@ namespace SynetraApi.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,IsActive,IsEnable,CreatedDate,UpdatedDate")] Parcs parcs)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,IsActive,IsEnable,CreatedDate,UpdatedDate")] Parc parc)
         {
-            if (id != parcs.Id)
+            if (id != parc.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace SynetraApi.Controllers
             {
                 try
                 {
-                    _context.Update(parcs);
+                    _context.Update(parc);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ParcsExists(parcs.Id))
+                    if (!ParcExists(parc.Id))
                     {
                         return NotFound();
                     }
@@ -113,7 +113,7 @@ namespace SynetraApi.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(parcs);
+            return View(parc);
         }
 
         // GET: Parcs/Delete/5
@@ -124,14 +124,14 @@ namespace SynetraApi.Controllers
                 return NotFound();
             }
 
-            var parcs = await _context.Parcs
+            var parc = await _context.Parc
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (parcs == null)
+            if (parc == null)
             {
                 return NotFound();
             }
 
-            return View(parcs);
+            return View(parc);
         }
 
         // POST: Parcs/Delete/5
@@ -139,19 +139,19 @@ namespace SynetraApi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var parcs = await _context.Parcs.FindAsync(id);
-            if (parcs != null)
+            var parc = await _context.Parc.FindAsync(id);
+            if (parc != null)
             {
-                _context.Parcs.Remove(parcs);
+                _context.Parc.Remove(parc);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ParcsExists(int id)
+        private bool ParcExists(int id)
         {
-            return _context.Parcs.Any(e => e.Id == id);
+            return _context.Parc.Any(e => e.Id == id);
         }
     }
 }

@@ -5,15 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SynetraApi.Data;
 using SynetraApi.Models;
 
-namespace SynetraApi.Data
+namespace SynetraApi.Controllers
 {
     public class RoomsController : Controller
     {
-        private readonly SynetraApiContext _context;
+        private readonly DataContext _context;
 
-        public RoomsController(SynetraApiContext context)
+        public RoomsController(DataContext context)
         {
             _context = context;
         }
@@ -21,8 +22,8 @@ namespace SynetraApi.Data
         // GET: Rooms
         public async Task<IActionResult> Index()
         {
-            var synetraApiContext = _context.Rooms.Include(r => r.Parcs);
-            return View(await synetraApiContext.ToListAsync());
+            var dataContext = _context.Room.Include(r => r.Parcs);
+            return View(await dataContext.ToListAsync());
         }
 
         // GET: Rooms/Details/5
@@ -33,7 +34,7 @@ namespace SynetraApi.Data
                 return NotFound();
             }
 
-            var rooms = await _context.Rooms
+            var rooms = await _context.Room
                 .Include(r => r.Parcs)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (rooms == null)
@@ -47,7 +48,7 @@ namespace SynetraApi.Data
         // GET: Rooms/Create
         public IActionResult Create()
         {
-            ViewData["ParcsId"] = new SelectList(_context.Set<Parcs>(), "Id", "Id");
+            ViewData["ParcsId"] = new SelectList(_context.Set<Parc>(), "Id", "Id");
             return View();
         }
 
@@ -56,7 +57,7 @@ namespace SynetraApi.Data
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,ParcsId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Rooms rooms)
+        public async Task<IActionResult> Create([Bind("Id,Name,ParcsId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Room rooms)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +65,7 @@ namespace SynetraApi.Data
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ParcsId"] = new SelectList(_context.Set<Parcs>(), "Id", "Id", rooms.ParcsId);
+            ViewData["ParcsId"] = new SelectList(_context.Set<Parc>(), "Id", "Id", rooms.ParcsId);
             return View(rooms);
         }
 
@@ -76,12 +77,12 @@ namespace SynetraApi.Data
                 return NotFound();
             }
 
-            var rooms = await _context.Rooms.FindAsync(id);
+            var rooms = await _context.Room.FindAsync(id);
             if (rooms == null)
             {
                 return NotFound();
             }
-            ViewData["ParcsId"] = new SelectList(_context.Set<Parcs>(), "Id", "Id", rooms.ParcsId);
+            ViewData["ParcsId"] = new SelectList(_context.Set<Parc>(), "Id", "Id", rooms.ParcsId);
             return View(rooms);
         }
 
@@ -90,7 +91,7 @@ namespace SynetraApi.Data
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ParcsId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Rooms rooms)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ParcsId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Room rooms)
         {
             if (id != rooms.Id)
             {
@@ -117,7 +118,7 @@ namespace SynetraApi.Data
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ParcsId"] = new SelectList(_context.Set<Parcs>(), "Id", "Id", rooms.ParcsId);
+            ViewData["ParcsId"] = new SelectList(_context.Set<Parc>(), "Id", "Id", rooms.ParcsId);
             return View(rooms);
         }
 
@@ -129,7 +130,7 @@ namespace SynetraApi.Data
                 return NotFound();
             }
 
-            var rooms = await _context.Rooms
+            var rooms = await _context.Room
                 .Include(r => r.Parcs)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (rooms == null)
@@ -145,10 +146,10 @@ namespace SynetraApi.Data
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var rooms = await _context.Rooms.FindAsync(id);
+            var rooms = await _context.Room.FindAsync(id);
             if (rooms != null)
             {
-                _context.Rooms.Remove(rooms);
+                _context.Room.Remove(rooms);
             }
 
             await _context.SaveChangesAsync();
@@ -157,7 +158,7 @@ namespace SynetraApi.Data
 
         private bool RoomsExists(int id)
         {
-            return _context.Rooms.Any(e => e.Id == id);
+            return _context.Room.Any(e => e.Id == id);
         }
     }
 }

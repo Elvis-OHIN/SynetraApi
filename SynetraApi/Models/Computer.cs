@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SynetraApi.Models
 {
     [Index(nameof(CarteMere), IsUnique = true)]
-    public class Computers
+    public class Computer
     {
         [Key]
         public int Id { get; set; }
@@ -16,9 +16,9 @@ namespace SynetraApi.Models
         public string Os { get; set; }
         public string CarteMere { get; set; }
         public string GPU { get; set; }
-        [ForeignKey("Rooms")]
+        [ForeignKey("Room")]
         public int RoomId { get; set; }
-        public Rooms Room { get; set; }
+        public Room Room { get; set; }
         public bool Statut { get; set; }
         public bool IsActive { get; set; }
         public bool IsEnable { get; set; }
