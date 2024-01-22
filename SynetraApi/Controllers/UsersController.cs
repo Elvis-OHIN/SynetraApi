@@ -1,134 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using SynetraApi.Data;
 using SynetraApi.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SynetraApi.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
-    public class UsersController : Controller
+    public class UsersController : ControllerBase
     {
-        private readonly SynetraApiContext _context;
+        private readonly UserManager<User> userManager;
+        private readonly SignInManager<User> signInManager;
 
-        public UsersController(SynetraApiContext context)
+        public UsersController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
-            _context = context;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
-        // GET: Users
-        public async Task<IActionResult> Index()
+
+        [HttpPost("add-user")]
+        public async Task<IActionResult> Register(Register model)
         {
-            return Ok(await _context.Users.ToListAsync());
+            var user = new User()
+            {
+                Lastname = model.Lastname,
+                Firstname = model.Firstname,
+                Email = model.Email,
+                PasswordHash = model.Password,
+            };
+            var result = await userManager.CreateAsync(user, user.PasswordHash!);
+            if (result.Succeeded)
+                return Ok("Registration made successfully");
+
+            return BadRequest("Error occured");
         }
 
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(string email, string password)
         {
-            if (id == null)
+            var signInResult = await signInManager.PasswordSignInAsync(
+                  userName: email!,
+                  password: password!,
+                  isPersistent: false,
+                  lockoutOnFailure: false
+                  );
+            if (signInResult.Succeeded)
             {
-                return NotFound();
+                return Ok("You are successfully logged in");
             }
-
-            var users = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (users == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(users);
-        }
-
-       
-
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Firstname,Lastname,Email,Password,RoleId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Users users)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(users);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return Ok(users);
-        }
-
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var users = await _context.Users.FindAsync(id);
-            if (users == null)
-            {
-                return NotFound();
-            }
-            return Ok(users);
-        }
-
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Firstname,Lastname,Email,Password,RoleId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Users users)
-        {
-            if (id != users.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(users);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UsersExists(users.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return Ok(users);
-        }
-
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var users = await _context.Users.FindAsync(id);
-            if (users != null)
-            {
-                _context.Users.Remove(users);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool UsersExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
+            return BadRequest("Error occured");
         }
     }
 }

@@ -10,13 +10,11 @@ using SynetraApi.Models;
 
 namespace SynetraApi.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
     public class LogsController : Controller
     {
-        private readonly SynetraApiContext _context;
+        private readonly DataContext _context;
 
-        public LogsController(SynetraApiContext context)
+        public LogsController(DataContext context)
         {
             _context = context;
         }
@@ -24,7 +22,7 @@ namespace SynetraApi.Controllers
         // GET: Logs
         public async Task<IActionResult> Index()
         {
-            return Ok(await _context.Logs.ToListAsync());
+            return View(await _context.Log.ToListAsync());
         }
 
         // GET: Logs/Details/5
@@ -35,41 +33,62 @@ namespace SynetraApi.Controllers
                 return NotFound();
             }
 
-            var logs = await _context.Logs
+            var log = await _context.Log
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (logs == null)
+            if (log == null)
             {
                 return NotFound();
             }
 
-            return Ok(logs);
+            return View(log);
         }
 
-        
+        // GET: Logs/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
         // POST: Logs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,UserId,Action,SqlRequest,CreatedDate")] Logs logs)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Action,SqlRequest,CreatedDate")] Log log)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(logs);
+                _context.Add(log);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return Ok(logs);
+            return View(log);
         }
 
-      
+        // GET: Logs/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var log = await _context.Log.FindAsync(id);
+            if (log == null)
+            {
+                return NotFound();
+            }
+            return View(log);
+        }
 
         // POST: Logs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,Action,SqlRequest,CreatedDate")] Logs logs)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Action,SqlRequest,CreatedDate")] Log log)
         {
-            if (id != logs.Id)
+            if (id != log.Id)
             {
                 return NotFound();
             }
@@ -78,12 +97,12 @@ namespace SynetraApi.Controllers
             {
                 try
                 {
-                    _context.Update(logs);
+                    _context.Update(log);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LogsExists(logs.Id))
+                    if (!LogExists(log.Id))
                     {
                         return NotFound();
                     }
@@ -94,28 +113,45 @@ namespace SynetraApi.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return Ok(logs);
+            return View(log);
         }
 
- 
+        // GET: Logs/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var log = await _context.Log
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (log == null)
+            {
+                return NotFound();
+            }
+
+            return View(log);
+        }
 
         // POST: Logs/Delete/5
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var logs = await _context.Logs.FindAsync(id);
-            if (logs != null)
+            var log = await _context.Log.FindAsync(id);
+            if (log != null)
             {
-                _context.Logs.Remove(logs);
+                _context.Log.Remove(log);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool LogsExists(int id)
+        private bool LogExists(int id)
         {
-            return _context.Logs.Any(e => e.Id == id);
+            return _context.Log.Any(e => e.Id == id);
         }
     }
 }
