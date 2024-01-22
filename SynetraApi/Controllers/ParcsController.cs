@@ -7,98 +7,69 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SynetraApi.Data;
 using SynetraApi.Models;
+using SynetraApi.Services;
 
 namespace SynetraApi.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class ParcsController : Controller
     {
         private readonly DataContext _context;
+        private readonly IParcService _parcService;
 
-        public ParcsController(DataContext context)
+        public ParcsController(DataContext context, IParcService parcService)
         {
             _context = context;
+            _parcService = parcService;
         }
 
-        // GET: Parcs
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> GetAllParcs()
         {
-            return View(await _context.Parc.ToListAsync());
+            return Ok(await _parcService.GetParcsAsync());
         }
 
-        // GET: Parcs/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Parcs/Get/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetParc(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var parc = await _context.Parc
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var parc = await _parcService.GetParcByIdAsync((int)id);
             if (parc == null)
             {
                 return NotFound();
             }
 
-            return View(parc);
+            return Ok(parc);
         }
 
-        // GET: Parcs/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
 
-        // POST: Parcs/Create
+        // POST: Parcs/Add
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,IsActive,IsEnable,CreatedDate,UpdatedDate")] Parc parc)
+        public async Task<IActionResult> Add([Bind("Name,IsActive")] Parc parc)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(parc);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await _parcService.CreateParcAsync(parc);
+                return Ok(parc);
             }
-            return View(parc);
+            return Ok(parc);
         }
 
-        // GET: Parcs/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var parc = await _context.Parc.FindAsync(id);
-            if (parc == null)
-            {
-                return NotFound();
-            }
-            return View(parc);
-        }
-
-        // POST: Parcs/Edit/5
+        // POST: Parcs/Update/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,IsActive,IsEnable,CreatedDate,UpdatedDate")] Parc parc)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [Bind("Name,IsActive")] Parc parc)
         {
-            if (id != parc.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
+                var parcUpdate = new Parc();
                 try
                 {
-                    _context.Update(parc);
-                    await _context.SaveChangesAsync();
+                    parcUpdate = await _parcService.UpdateParcAsync(id,parc); 
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -111,42 +82,23 @@ namespace SynetraApi.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Ok(parcUpdate);
             }
-            return View(parc);
-        }
-
-        // GET: Parcs/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var parc = await _context.Parc
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (parc == null)
-            {
-                return NotFound();
-            }
-
-            return View(parc);
+            return Ok(parc);
         }
 
         // POST: Parcs/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            var parc = await _context.Parc.FindAsync(id);
-            if (parc != null)
+            try
             {
-                _context.Parc.Remove(parc);
+                await _parcService.DeleteParcAsync(id);
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch {
+                return NotFound();
+            }
+            return Ok(true);
         }
 
         private bool ParcExists(int id)

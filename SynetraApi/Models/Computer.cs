@@ -17,8 +17,8 @@ namespace SynetraApi.Models
         public string CarteMere { get; set; }
         public string GPU { get; set; }
         [ForeignKey("Room")]
-        public int RoomId { get; set; }
-        public Room Room { get; set; }
+        public int? RoomId { get; set; }
+        public Room? Room { get; set; }
         public bool Statut { get; set; }
         public bool IsActive { get; set; }
         public bool IsEnable { get; set; }
