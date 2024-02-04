@@ -15,7 +15,7 @@ namespace SynetraApi.Services
 
         public async Task<List<Parc>> GetParcsAsync()
         {
-            return await _context.Parc.ToListAsync();
+            return await _context.Parc.Where(p => p.IsEnable == true).ToListAsync();
         }
 
         public async Task<Parc> GetParcByIdAsync(int id)

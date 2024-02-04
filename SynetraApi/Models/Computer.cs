@@ -22,6 +22,7 @@ namespace SynetraApi.Models
         public bool Statut { get; set; }
         public bool IsActive { get; set; }
         public bool IsEnable { get; set; }
+        public ICollection<ShareScreen>? shareScreens { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
     }

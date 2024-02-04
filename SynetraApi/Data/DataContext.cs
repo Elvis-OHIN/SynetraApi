@@ -52,5 +52,6 @@ namespace SynetraApi.Data
         public DbSet<SynetraApi.Models.Computer> Computer { get; set; } = default!;
         public DbSet<SynetraApi.Models.Parc> Parc { get; set; } = default!;
         public DbSet<SynetraApi.Models.Log> Log { get; set; } = default!;
+        public DbSet<SynetraApi.Models.ShareScreen> ShareScreen { get; set; } = default!;
     }
 }

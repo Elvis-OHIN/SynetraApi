@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SynetraApi.Data;
 
@@ -11,9 +12,11 @@ using SynetraApi.Data;
 namespace SynetraApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240124225500_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -309,10 +312,10 @@ namespace SynetraApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ComputerId")
+                    b.Property<int?>("ComputerID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreatedDate")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<byte[]>("ImageData")
@@ -324,7 +327,7 @@ namespace SynetraApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ComputerId");
+                    b.HasIndex("ComputerID");
 
                     b.ToTable("ShareScreen", "dbo");
                 });
@@ -486,9 +489,11 @@ namespace SynetraApi.Migrations
 
             modelBuilder.Entity("SynetraApi.Models.ShareScreen", b =>
                 {
-                    b.HasOne("SynetraApi.Models.Computer", null)
+                    b.HasOne("SynetraApi.Models.Computer", "Computer")
                         .WithMany("shareScreens")
-                        .HasForeignKey("ComputerId");
+                        .HasForeignKey("ComputerID");
+
+                    b.Navigation("Computer");
                 });
 
             modelBuilder.Entity("SynetraApi.Models.Computer", b =>
