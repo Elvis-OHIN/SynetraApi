@@ -1,4 +1,4 @@
-﻿using SynetraApi.Models;
+using SynetraUtils.Models.DataManagement;
 
 namespace SynetraApi.Services
 {

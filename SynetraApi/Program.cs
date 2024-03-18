@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SynetraApi.Data;
 using SynetraApi.Models;
 using SynetraApi.Services;
+using SynetraUtils.Models.DataManagement;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SynetraApiContext") ?? throw new InvalidOperationException("Connection string 'SynetraApiContext' not found.")));
@@ -16,6 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddIdentityApiEndpoints<User>().AddEntityFrameworkStores<DataContext>();
 builder.Services.AddScoped<IParcService, ParcService>();
 builder.Services.AddScoped<IComputerService, ComputerService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
 var MyAllowSpecificOrigins = "_MyAllowSubdomainPolicy";
 builder.Services.AddCors(policy =>
 {

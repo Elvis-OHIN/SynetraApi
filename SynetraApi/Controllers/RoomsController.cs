@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,103 +7,71 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SynetraApi.Data;
 using SynetraApi.Models;
+using SynetraApi.Services;
+using SynetraUtils.Models.DataManagement;
 
 namespace SynetraApi.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class RoomsController : Controller
     {
         private readonly DataContext _context;
+        private readonly IRoomService _roomService;
 
-        public RoomsController(DataContext context)
+        public RoomsController(DataContext context, IRoomService roomService)
         {
             _context = context;
+            _roomService = roomService;
         }
 
-        // GET: Rooms
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Room.Include(r => r.Parcs);
-            return View(await dataContext.ToListAsync());
+            return Ok(await _roomService.GetRoomsAsync());
         }
 
         // GET: Rooms/Details/5
+        [HttpGet("{id}")]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            var room = await _roomService.GetRoomByIdAsync((int)id);
+            if (room == null)
             {
                 return NotFound();
             }
 
-            var rooms = await _context.Room
-                .Include(r => r.Parcs)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (rooms == null)
-            {
-                return NotFound();
-            }
-
-            return View(rooms);
+            return Ok(room);
         }
 
-        // GET: Rooms/Create
-        public IActionResult Create()
-        {
-            ViewData["ParcsId"] = new SelectList(_context.Set<Parc>(), "Id", "Id");
-            return View();
-        }
-
+   
         // POST: Rooms/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,ParcsId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Room rooms)
+        public async Task<IActionResult> Create([Bind("Id,Name,RoomsId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Room rooms)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(rooms);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await _roomService.CreateRoomAsync(rooms);
+                return Ok(rooms);
             }
-            ViewData["ParcsId"] = new SelectList(_context.Set<Parc>(), "Id", "Id", rooms.ParcsId);
-            return View(rooms);
+            return Ok(rooms);
         }
 
-        // GET: Rooms/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var rooms = await _context.Room.FindAsync(id);
-            if (rooms == null)
-            {
-                return NotFound();
-            }
-            ViewData["ParcsId"] = new SelectList(_context.Set<Parc>(), "Id", "Id", rooms.ParcsId);
-            return View(rooms);
-        }
-
+      
         // POST: Rooms/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ParcsId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Room rooms)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,RoomsId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Room rooms)
         {
-            if (id != rooms.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
+                var RoomUpdate = new Room();
                 try
                 {
-                    _context.Update(rooms);
-                    await _context.SaveChangesAsync();
+                    RoomUpdate = await _roomService.UpdateRoomAsync(id, rooms);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,44 +84,26 @@ namespace SynetraApi.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Ok(RoomUpdate);
             }
-            ViewData["ParcsId"] = new SelectList(_context.Set<Parc>(), "Id", "Id", rooms.ParcsId);
-            return View(rooms);
+            return Ok(rooms);
         }
 
-        // GET: Rooms/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var rooms = await _context.Room
-                .Include(r => r.Parcs)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (rooms == null)
-            {
-                return NotFound();
-            }
-
-            return View(rooms);
-        }
+      
 
         // POST: Rooms/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var rooms = await _context.Room.FindAsync(id);
-            if (rooms != null)
+            try
             {
-                _context.Room.Remove(rooms);
+                await _roomService.DeleteRoomAsync(id);
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch
+            {
+                return NotFound();
+            }
+            return Ok(true);
         }
 
         private bool RoomsExists(int id)

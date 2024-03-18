@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SynetraApi.Data;
 using SynetraApi.Models;
 using SynetraApi.Services;
+using SynetraUtils.Models.DataManagement;
 
 namespace SynetraApi.Controllers
 {

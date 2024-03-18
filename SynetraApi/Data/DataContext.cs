@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SynetraApi.Models;
+using SynetraUtils.Models.DataManagement;
+using System.Reflection.Emit;
 
 namespace SynetraApi.Data
 {
@@ -45,12 +47,17 @@ namespace SynetraApi.Data
                 entity.ToTable(name: "UserTokens");
              
             });
+            builder.Entity<Parc>()
+               .HasMany(e => e.rooms)
+               .WithOne(e => e.Parc)
+               .HasForeignKey(e => e.ParcId)
+               .IsRequired(false);
         }
        
-        public DbSet<SynetraApi.Models.Room> Room { get; set; } = default!;
+        public DbSet<SynetraUtils.Models.DataManagement.Room> Room { get; set; } = default!;
       
-        public DbSet<SynetraApi.Models.Computer> Computer { get; set; } = default!;
-        public DbSet<SynetraApi.Models.Parc> Parc { get; set; } = default!;
+        public DbSet<SynetraUtils.Models.DataManagement.Computer> Computer { get; set; } = default!;
+        public DbSet<SynetraUtils.Models.DataManagement.Parc> Parc { get; set; } = default!;
         public DbSet<SynetraApi.Models.Log> Log { get; set; } = default!;
         public DbSet<SynetraApi.Models.ShareScreen> ShareScreen { get; set; } = default!;
     }

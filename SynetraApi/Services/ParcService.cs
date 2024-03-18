@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SynetraApi.Data;
-using SynetraApi.Models;
+using SynetraUtils.Models.DataManagement;
 
 namespace SynetraApi.Services
 {
