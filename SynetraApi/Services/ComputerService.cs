@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SynetraApi.Data;
 using SynetraUtils.Models.DataManagement;
+using SynetraUtils.Auth;
 
 namespace SynetraApi.Services
 {
@@ -34,10 +35,22 @@ namespace SynetraApi.Services
             return true;
         }
 
+        public async Task<Computer> GetComputerByFootPrintAsync(string footPrint)
+        {
+            
+            var computers =  _context.Computer
+                .AsEnumerable()
+                .Where(c => c.FootPrint == footPrint)
+                .FirstOrDefault();
+
+            return computers;
+        }
+
         public async Task<Computer> GetComputerByIdAsync(int id)
         {
             return await _context.Computer.FindAsync(id);
         }
+
 
         public async Task<List<Computer>> GetComputersAsync()
         {
@@ -61,6 +74,20 @@ namespace SynetraApi.Services
             existingComputer.Os = updatedComputer.Os;
             existingComputer.RoomId = updatedComputer.RoomId;
             existingComputer.Statut = updatedComputer.Statut;
+            existingComputer.UpdatedDate = DateTime.Now;
+            await _context.SaveChangesAsync();
+            return existingComputer;
+        }
+
+        public async Task<Computer> UpdateComputerFootPrintAsync(int id, string footPrint)
+        {
+            var existingComputer = await _context.Computer.FindAsync(id);
+            if (existingComputer == null)
+            {
+                return null;
+            }
+
+            existingComputer.FootPrint = footPrint;
             existingComputer.UpdatedDate = DateTime.Now;
             await _context.SaveChangesAsync();
             return existingComputer;

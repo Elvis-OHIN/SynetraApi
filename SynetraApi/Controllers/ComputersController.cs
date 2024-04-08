@@ -93,8 +93,53 @@ namespace SynetraApi.Controllers
             return Ok(computers);
         }
 
-        // POST: Computers/Delete/5
-        [HttpDelete("{id}")]
+        [HttpPut("FootPrint/{id}")]
+        public async Task<IActionResult> EditFootPrint(int id, string footPrint)
+        {
+            if (ModelState.IsValid)
+            {
+                Computer computerUpdate = new Computer();
+                try
+                {
+                    computerUpdate = await _computerService.UpdateComputerFootPrintAsync(id, footPrint);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ComputersExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return Ok();
+            }
+            return Ok();
+        }
+
+        [HttpGet("FootPrint/{footPrint}")]
+        public async Task<IActionResult> ComputersExistsByFootPrint(string? footPrint)
+        {
+            if (footPrint == null)
+            {
+                return NotFound();
+            }
+
+            var computers = await _computerService.GetComputerByFootPrintAsync(footPrint);
+            if (computers == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(computers);
+        }
+
+
+
+            // POST: Computers/Delete/5
+            [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try

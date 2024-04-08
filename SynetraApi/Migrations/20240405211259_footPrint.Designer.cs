@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SynetraApi.Data;
 
@@ -11,9 +12,11 @@ using SynetraApi.Data;
 namespace SynetraApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240405211259_footPrint")]
+    partial class footPrint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -264,27 +267,6 @@ namespace SynetraApi.Migrations
                     b.HasIndex("RoomId");
 
                     b.ToTable("Computer", "dbo");
-                });
-
-            modelBuilder.Entity("SynetraUtils.Models.DataManagement.Connection", b =>
-                {
-                    b.Property<string>("ConnectionID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("ComputerId")
-                        .HasColumnType("int");
-
-                    b.Property<bool?>("Connected")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserAgent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ConnectionID");
-
-                    b.HasIndex("ComputerId");
-
-                    b.ToTable("Connection", "dbo");
                 });
 
             modelBuilder.Entity("SynetraUtils.Models.DataManagement.NetworkInfo", b =>
@@ -542,13 +524,6 @@ namespace SynetraApi.Migrations
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("SynetraUtils.Models.DataManagement.Connection", b =>
-                {
-                    b.HasOne("SynetraUtils.Models.DataManagement.Computer", null)
-                        .WithMany("Connections")
-                        .HasForeignKey("ComputerId");
-                });
-
             modelBuilder.Entity("SynetraUtils.Models.DataManagement.NetworkInfo", b =>
                 {
                     b.HasOne("SynetraUtils.Models.DataManagement.Computer", "Computer")
@@ -569,8 +544,6 @@ namespace SynetraApi.Migrations
 
             modelBuilder.Entity("SynetraUtils.Models.DataManagement.Computer", b =>
                 {
-                    b.Navigation("Connections");
-
                     b.Navigation("Networks");
                 });
 
