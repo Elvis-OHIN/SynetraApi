@@ -268,19 +268,36 @@ namespace SynetraApi.Migrations
 
             modelBuilder.Entity("SynetraUtils.Models.DataManagement.Connection", b =>
                 {
-                    b.Property<string>("ConnectionID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("ComputerId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("Connected")
+                    b.Property<bool>("Connected")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UserAgent")
+                    b.Property<string>("ConnectionID")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ConnectionID");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IPAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserAgent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ComputerId");
 

@@ -46,6 +46,26 @@ namespace SynetraApi.Services
             return computers;
         }
 
+        public async Task<Computer> CreateComputerConnectionAsync(int id,Connection connection)
+        {
+            var existingComputer = await _context.Computer.FindAsync(id);
+            if (existingComputer == null)
+            {
+                return null;
+            }
+            existingComputer.Connections.Add(connection);
+            await _context.SaveChangesAsync();
+            return existingComputer;
+        }
+
+        public async Task<Computer> GetComputerConnectionAsync(int id)
+        {
+            var computer = _context.Computer
+                .Include(u => u.Connections)
+                .SingleOrDefault(u => u.Id == id);
+            return computer;
+        }
+
         public async Task<Computer> GetComputerByIdAsync(int id)
         {
             return await _context.Computer.FindAsync(id);

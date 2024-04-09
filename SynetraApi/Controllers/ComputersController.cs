@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,8 @@ namespace SynetraApi.Controllers
 
             return Ok(computers);
         }
+        
+        
 
 
         // POST: Computers/Create
@@ -135,11 +138,53 @@ namespace SynetraApi.Controllers
 
             return Ok(computers);
         }
+        
+        [HttpGet("Connection/{id}")]
+        public async Task<IActionResult> ComputersConnectionById(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var computers = await _computerService.GetComputerConnectionAsync(id);
+            if (computers == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(computers);
+        }
+        
+        [HttpPut("Connection/{id}")]
+        public async Task<IActionResult> CreateConnection(int id, Connection connection)
+        {
+            if (ModelState.IsValid)
+            {
+                Computer computerUpdate = new Computer();
+                try
+                {
+                    computerUpdate = await _computerService.CreateComputerConnectionAsync(id, connection);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ComputersExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return Ok();
+            }
+            return Ok();
+        }
 
 
-
-            // POST: Computers/Delete/5
-            [HttpDelete("{id}")]
+        // POST: Computers/Delete/5
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
