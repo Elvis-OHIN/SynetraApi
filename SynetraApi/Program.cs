@@ -5,9 +5,10 @@ using SynetraApi.Data;
 using SynetraApi.Models;
 using SynetraApi.Services;
 using SynetraUtils.Models.DataManagement;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SynetraApiContext") ?? throw new InvalidOperationException("Connection string 'SynetraApiContext' not found.")));
+    options.UseMySQL(builder.Configuration.GetConnectionString("SynetraApiContext") ?? throw new InvalidOperationException("Connection string 'SynetraApiContext' not found.")));
 // Add services to the container.
 builder.Services.AddAuthentication();
 builder.Services.AddControllers();

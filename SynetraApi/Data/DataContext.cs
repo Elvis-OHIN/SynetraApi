@@ -14,8 +14,7 @@ namespace SynetraApi.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.HasDefaultSchema("dbo");
-           
+
             builder.Entity<User>(entity =>
             {
                 entity.ToTable(name: "User");

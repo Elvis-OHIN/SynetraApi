@@ -155,7 +155,9 @@ namespace SynetraApi.Controllers
 
             return Ok(computers);
         }
-        
+
+      
+
         [HttpPut("Connection/{id}")]
         public async Task<IActionResult> CreateConnection(int id, Connection connection)
         {
