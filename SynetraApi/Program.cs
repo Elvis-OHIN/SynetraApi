@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddIdentityApiEndpoints<User>().AddEntityFrameworkStores<DataContext>();
+builder.Services.AddIdentityApiEndpoints<User>().AddRoles<IdentityRole<int>>().AddEntityFrameworkStores<DataContext>();
 builder.Services.AddScoped<IParcService, ParcService>();
 builder.Services.AddScoped<IComputerService, ComputerService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
@@ -31,6 +31,21 @@ builder.Services.AddCors(policy =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<DataContext>();
+    context.Database.Migrate();
+    // requires using Microsoft.Extensions.Configuration;
+    // Set password with the Secret Manager tool.
+    // dotnet user-secrets set SeedUserPW <pw>
+
+    var testUserPw = builder.Configuration.GetValue<string>("SeedUserPW");
+
+    await SeedData.Initialize(services, testUserPw);
+}
+
 app.UseCors("_myAllowSpecificOrigins");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

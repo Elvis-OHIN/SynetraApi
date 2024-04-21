@@ -11,7 +11,7 @@ using SynetraApi.Data;
 namespace SynetraApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240410183555_init")]
+    [Migration("20240421211340_init")]
     partial class init
     {
         /// <inheritdoc />

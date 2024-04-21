@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using SynetraUtils.Models.DataManagement;
 namespace SynetraApi.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "SuperAdmin")]
     [Route("api/[controller]")]
     public class ParcsController : Controller
     {
