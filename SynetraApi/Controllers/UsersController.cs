@@ -37,6 +37,23 @@ namespace SynetraApi.Controllers
 
             return BadRequest("Error occured");
         }
+/*
+        [HttpPost("users")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var user = new User()
+            {
+                Lastname = model.Lastname,
+                Firstname = model.Firstname,
+                Email = model.Email,
+                PasswordHash = model.Password,
+            };
+            var result = await userManager.CreateAsync(user, user.PasswordHash!);
+            if (result.Succeeded)
+                return Ok("Registration made successfully");
+
+            return BadRequest("Error occured");
+        }*/
 
 
         [HttpPost("login")]

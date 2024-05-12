@@ -42,9 +42,23 @@ namespace SynetraApi.Services
         public async Task<List<Room>> GetRoomsAsync()
         {
             var roomList = await _context.Room.Include(p => p.Parc).ToListAsync();
-            roomList = await _context.Room.Where(p => p.IsEnable == true).ToListAsync();
+            roomList = await _context.Room.Where(r => r.IsEnable == true && r.Parc.IsEnable == true).ToListAsync();
             return roomList;
         }
+
+        public bool ParcEnable(Parc? parc)
+        {
+            if (parc is null)
+            {
+                return false;
+            }
+            if (parc.IsEnable == false)
+            {
+                return false;
+            }
+            return true;
+        }
+
 
         public async Task<Room> UpdateRoomAsync(int id, Room updatedRoom)
         {
