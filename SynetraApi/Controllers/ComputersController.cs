@@ -32,6 +32,18 @@ namespace SynetraApi.Controllers
         {
             return Ok(await _computerService.GetComputersAsync());
         }
+        [HttpGet("Parc/{id}")]
+        public async Task<IActionResult> GetComputerByParc(int id)
+        {
+            try
+            {
+                return Ok(await _computerService.GetComputersByParcAsync(id));
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
 
         // GET: Computers/Details/5
         [HttpGet("{id}")]
@@ -179,9 +191,9 @@ namespace SynetraApi.Controllers
                         throw;
                     }
                 }
-                return Ok();
+                return Ok(computerUpdate);
             }
-            return Ok();
+            return NotFound();
         }
 
 

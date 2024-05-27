@@ -59,5 +59,6 @@ namespace SynetraApi.Data
         public DbSet<SynetraApi.Models.Log> Log { get; set; } = default!;
         public DbSet<SynetraApi.Models.ShareScreen> ShareScreen { get; set; } = default!;
         public DbSet<SynetraUtils.Models.DataManagement.Connection> Connection { get; set; } = default!;
+        public DbSet<SynetraUtils.Models.DataManagement.NetworkInfo> NetworkInfo { get; set; } = default!;
     }
 }

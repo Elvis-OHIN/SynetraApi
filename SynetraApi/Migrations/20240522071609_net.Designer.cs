@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SynetraApi.Data;
 
@@ -10,9 +11,11 @@ using SynetraApi.Data;
 namespace SynetraApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240522071609_net")]
+    partial class net
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -296,11 +299,11 @@ namespace SynetraApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("CarteMere")
+                        .HasColumnType("longtext");
+
                     b.Property<int?>("ComputerId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("DNServers")
                         .HasColumnType("longtext");
@@ -308,17 +311,8 @@ namespace SynetraApi.Migrations
                     b.Property<string>("DefaultGateway")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("FootPrint")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("IPAddress")
                         .HasColumnType("longtext");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsEnable")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("MACAddress")
                         .HasColumnType("longtext");
@@ -331,9 +325,6 @@ namespace SynetraApi.Migrations
 
                     b.Property<string>("Type")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 

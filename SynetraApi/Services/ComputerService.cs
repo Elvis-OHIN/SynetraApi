@@ -53,6 +53,10 @@ namespace SynetraApi.Services
             {
                 return null;
             }
+            if (existingComputer.Connections is null)
+            {
+                existingComputer.Connections = new List<Connection>();
+            }
             existingComputer.Connections.Add(connection);
             await _context.SaveChangesAsync();
             return existingComputer;
@@ -93,6 +97,7 @@ namespace SynetraApi.Services
             existingComputer.OperatingSystem = updatedComputer.OperatingSystem;
             existingComputer.Os = updatedComputer.Os;
             existingComputer.RoomId = updatedComputer.RoomId;
+            existingComputer.ParcId = updatedComputer.ParcId;
             existingComputer.Statut = updatedComputer.Statut;
             existingComputer.UpdatedDate = DateTime.Now;
             await _context.SaveChangesAsync();
@@ -111,6 +116,14 @@ namespace SynetraApi.Services
             existingComputer.UpdatedDate = DateTime.Now;
             await _context.SaveChangesAsync();
             return existingComputer;
+        }
+
+        public async Task<List<Computer>> GetComputersByParcAsync(int parcId)
+        {
+            var computerList = await _context.Computer.Include(p => p.Room).ToListAsync();
+            computerList = await _context.Computer.Include(p => p.Parc).ToListAsync();
+            computerList = await _context.Computer.Where(r => r.IsEnable == true && r.Parc.IsEnable == true && r.Parc.Id == parcId).ToListAsync();
+            return computerList;
         }
     }
 }

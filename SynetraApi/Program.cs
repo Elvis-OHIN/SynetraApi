@@ -5,6 +5,7 @@ using SynetraApi.Data;
 using SynetraApi.Models;
 using SynetraApi.Services;
 using SynetraUtils.Models.DataManagement;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options =>
@@ -56,6 +57,28 @@ if (app.Environment.IsDevelopment())
 app.MapIdentityApi<User>();
 
 app.UseHttpsRedirection();
+
+app.MapGet("/roles", (ClaimsPrincipal user) =>
+{
+    if (user.Identity is not null && user.Identity.IsAuthenticated)
+    {
+        var identity = (ClaimsIdentity)user.Identity;
+        var roles = identity.FindAll(identity.RoleClaimType)
+            .Select(c =>
+                new
+                {
+                    c.Issuer,
+                    c.OriginalIssuer,
+                    c.Type,
+                    c.Value,
+                    c.ValueType
+                });
+
+        return TypedResults.Json(roles);
+    }
+
+    return Results.Unauthorized();
+}).RequireAuthorization();
 
 app.UseAuthorization();
 

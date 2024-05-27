@@ -5,6 +5,7 @@ namespace SynetraApi.Services
     public interface IComputerService
     {
         Task<List<Computer>> GetComputersAsync();
+        Task<List<Computer>> GetComputersByParcAsync(int id);
         Task<Computer> GetComputerByIdAsync(int id);
         Task<Computer> GetComputerByFootPrintAsync(string footPrint);
         Task<Computer> CreateComputerAsync(Computer computer);

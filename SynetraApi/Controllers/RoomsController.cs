@@ -31,6 +31,19 @@ namespace SynetraApi.Controllers
             return Ok(await _roomService.GetRoomsAsync());
         }
 
+        [HttpGet("Parc/{id}")]
+        public async Task<IActionResult> GetRoomByParc(int id)
+        {
+            try
+            {
+                return Ok(await _roomService.GetRoomsByParcAsync(id));
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+        
         // GET: Rooms/Details/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Details(int? id)
