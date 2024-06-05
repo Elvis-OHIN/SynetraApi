@@ -27,13 +27,21 @@ namespace SynetraApi.Controllers
             _parcService = parcService;
         }
 
+        /// <summary>
+        /// Récupère la liste de tous les parcs.
+        /// </summary>
+        /// <returns>Retourne une liste des parcs.</returns>
         [HttpGet]
         public async Task<IActionResult> GetAllParcs()
         {
             return Ok(await _parcService.GetParcsAsync());
         }
 
-        // GET: Parcs/Get/5
+        /// <summary>
+        /// Récupère les détails d'un parc spécifique.
+        /// </summary>
+        /// <param name="id">L'identifiant du parc.</param>
+        /// <returns>Retourne les détails du parc.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetParc(int id)
         {
@@ -46,10 +54,11 @@ namespace SynetraApi.Controllers
             return Ok(parc);
         }
 
-
-        // POST: Parcs/Add
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Ajoute un nouveau parc.
+        /// </summary>
+        /// <param name="parc">Les détails du parc à ajouter.</param>
+        /// <returns>Retourne le parc ajouté si le modèle est valide.</returns>
         [HttpPost]
         public async Task<IActionResult> Add([Bind("Name,IsActive")] Parc parc)
         {
@@ -61,9 +70,12 @@ namespace SynetraApi.Controllers
             return Ok(parc);
         }
 
-        // POST: Parcs/Update/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Met à jour un parc existant.
+        /// </summary>
+        /// <param name="id">L'identifiant du parc à mettre à jour.</param>
+        /// <param name="parc">Les détails mis à jour du parc.</param>
+        /// <returns>Retourne le parc mis à jour si le modèle est valide.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [Bind("Name,IsActive")] Parc parc)
         {
@@ -72,7 +84,7 @@ namespace SynetraApi.Controllers
                 var parcUpdate = new Parc();
                 try
                 {
-                    parcUpdate = await _parcService.UpdateParcAsync(id,parc); 
+                    parcUpdate = await _parcService.UpdateParcAsync(id, parc);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -90,7 +102,11 @@ namespace SynetraApi.Controllers
             return Ok(parc);
         }
 
-        // POST: Parcs/Delete/5
+        /// <summary>
+        /// Supprime un parc spécifique.
+        /// </summary>
+        /// <param name="id">L'identifiant du parc à supprimer.</param>
+        /// <returns>Retourne OK avec true si la suppression réussit, sinon NotFound.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -98,11 +114,13 @@ namespace SynetraApi.Controllers
             {
                 await _parcService.DeleteParcAsync(id);
             }
-            catch {
+            catch
+            {
                 return NotFound();
             }
             return Ok(true);
         }
+
 
         private bool ParcExists(int id)
         {

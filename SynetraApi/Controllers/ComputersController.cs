@@ -26,12 +26,22 @@ namespace SynetraApi.Controllers
             _computerService = computerService;
         }
 
-        // GET: Computers
+
+        /// <summary>
+        /// Récupère une liste d'ordinateurs.
+        /// </summary>
+        /// <returns>Retourne une liste d'ordinateurs en tant qu'opération asynchrone.</returns>
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             return Ok(await _computerService.GetComputersAsync());
         }
+
+        /// <summary>
+        /// Récupère une liste d'ordinateurs par parc.
+        /// </summary>
+        /// <param name="id">L'identifiant du parc.</param>
+        /// <returns>Retourne une liste d'ordinateurs en tant qu'opération asynchrone.</returns>
         [HttpGet("Parc/{id}")]
         public async Task<IActionResult> GetComputerByParc(int id)
         {
@@ -45,7 +55,11 @@ namespace SynetraApi.Controllers
             }
         }
 
-        // GET: Computers/Details/5
+        /// <summary>
+        /// Récupère les détails d'un ordinateur spécifique.
+        /// </summary>
+        /// <param name="id">L'identifiant de l'ordinateur.</param>
+        /// <returns>Retourne les détails de l'ordinateur en tant qu'opération asynchrone.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -62,13 +76,15 @@ namespace SynetraApi.Controllers
 
             return Ok(computers);
         }
-        
-        
 
 
-        // POST: Computers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+
+        /// <summary>
+        /// Crée un nouvel ordinateur.
+        /// </summary>
+        /// <param name="computers">Les détails de l'ordinateur à créer.</param>
+        /// <returns>Retourne l'ordinateur créé si le modèle est valide.</returns>
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Name,IDProduct,OperatingSystem,Os,CarteMere,GPU,RoomId,Statut,IsActive")] Computer computers)
         {
@@ -80,8 +96,12 @@ namespace SynetraApi.Controllers
             return Ok(computers);
         }
 
-        // POST: Computers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        /// <summary>
+        /// Met à jour les détails d'un ordinateur existant.
+        /// </summary>
+        /// <param name="id">L'identifiant de l'ordinateur à mettre à jour.</param>
+        /// <param name="computers">Les détails mis à jour de l'ordinateur.</param>
+        /// <returns>Retourne l'ordinateur mis à jour si le modèle est valide.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,IDProduct,OperatingSystem,Os,CarteMere,GPU,RoomId,Statut,IsActive,IsEnable,CreatedDate,UpdatedDate")] Computer computers)
         {
@@ -107,7 +127,12 @@ namespace SynetraApi.Controllers
             }
             return Ok(computers);
         }
-
+        /// <summary>
+        /// Met à jour l'empreinte d'un ordinateur.
+        /// </summary>
+        /// <param name="id">L'identifiant de l'ordinateur à mettre à jour.</param>
+        /// <param name="footPrint">La nouvelle empreinte de l'ordinateur.</param>
+        /// <returns>Retourne OK si l'opération réussit.</returns>
         [HttpPut("FootPrint/{id}")]
         public async Task<IActionResult> EditFootPrint(int id, string footPrint)
         {
@@ -134,6 +159,11 @@ namespace SynetraApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Vérifie l'existence d'un ordinateur par empreinte.
+        /// </summary>
+        /// <param name="footPrint">L'empreinte de l'ordinateur.</param>
+        /// <returns>Retourne l'ordinateur s'il existe, sinon NotFound.</returns>
         [HttpGet("FootPrint/{footPrint}")]
         public async Task<IActionResult> ComputersExistsByFootPrint(string? footPrint)
         {
@@ -150,7 +180,12 @@ namespace SynetraApi.Controllers
 
             return Ok(computers);
         }
-        
+
+        /// <summary>
+        /// Récupère la connexion d'un ordinateur par son identifiant.
+        /// </summary>
+        /// <param name="id">L'identifiant de l'ordinateur.</param>
+        /// <returns>Retourne la connexion de l'ordinateur s'il existe, sinon NotFound.</returns>
         [HttpGet("Connection/{id}")]
         public async Task<IActionResult> ComputersConnectionById(int id)
         {
@@ -168,8 +203,13 @@ namespace SynetraApi.Controllers
             return Ok(computers);
         }
 
-      
 
+        /// <summary>
+        /// Crée une nouvelle connexion pour un ordinateur.
+        /// </summary>
+        /// <param name="id">L'identifiant de l'ordinateur.</param>
+        /// <param name="connection">Les détails de la connexion à créer.</param>
+        /// <returns>Retourne l'ordinateur mis à jour avec la nouvelle connexion, sinon NotFound.</returns>
         [HttpPut("Connection/{id}")]
         public async Task<IActionResult> CreateConnection(int id, Connection connection)
         {
@@ -197,7 +237,11 @@ namespace SynetraApi.Controllers
         }
 
 
-        // POST: Computers/Delete/5
+        /// <summary>
+        /// Supprime un ordinateur spécifique.
+        /// </summary>
+        /// <param name="id">L'identifiant de l'ordinateur à supprimer.</param>
+        /// <returns>Retourne OK avec true si la suppression réussit, sinon NotFound.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -211,6 +255,7 @@ namespace SynetraApi.Controllers
             }
             return Ok(true);
         }
+
 
         private bool ComputersExists(int id)
         {

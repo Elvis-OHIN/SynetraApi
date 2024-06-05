@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SynetraUtils.Models.MessageManagement;
 using System.Net.Sockets;
@@ -6,9 +7,15 @@ using System.Net.Sockets;
 namespace SynetraApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     [ApiController]
     public class WakeOnLanController : ControllerBase
     {
+        /// <summary>
+        /// Envoie un paquet Magic Wake-on-LAN pour réveiller un ordinateur.
+        /// </summary>
+        /// <param name="request">Les détails de la demande contenant l'adresse de diffusion et l'adresse MAC.</param>
+        /// <returns>Retourne un message de succès si le paquet Magic est envoyé, sinon une erreur.</returns>
         [HttpPost]
         public async Task<IActionResult> Wake([FromBody] WakeRequest request)
         {
@@ -23,25 +30,23 @@ namespace SynetraApi.Controllers
             }
         }
 
+
         private static void SendWakeOnLan(string broadcastAddress, string macAddress)
         {
-            // Convertir l'adresse MAC en tableau de bytes
             byte[] macBytes = GetMacBytes(macAddress);
 
-            // Créer un paquet magique (Magic Packet)
             byte[] packet = new byte[102];
-            // Remplir les 6 premiers bytes avec 0xFF
+
             for (int i = 0; i < 6; i++)
             {
                 packet[i] = 0xFF;
             }
-            // Ajouter l'adresse MAC 16 fois
+
             for (int i = 1; i <= 16; i++)
             {
                 Buffer.BlockCopy(macBytes, 0, packet, i * 6, macBytes.Length);
             }
 
-            // Envoyer le paquet magique
             using (UdpClient client = new UdpClient())
             {
                 client.EnableBroadcast = true;

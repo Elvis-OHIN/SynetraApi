@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using SynetraUtils.Models.DataManagement;
 namespace SynetraApi.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     [Route("api/[controller]")]
     public class RoomsController : Controller
     {
@@ -25,12 +27,21 @@ namespace SynetraApi.Controllers
             _roomService = roomService;
         }
 
+        /// <summary>
+        /// Récupère la liste de toutes les salles.
+        /// </summary>
+        /// <returns>Retourne une liste des salles.</returns>
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             return Ok(await _roomService.GetRoomsAsync());
         }
 
+        /// <summary>
+        /// Récupère la liste des salles par identifiant de parc.
+        /// </summary>
+        /// <param name="id">L'identifiant du parc.</param>
+        /// <returns>Retourne une liste des salles pour un parc spécifique.</returns>
         [HttpGet("Parc/{id}")]
         public async Task<IActionResult> GetRoomByParc(int id)
         {
@@ -43,8 +54,12 @@ namespace SynetraApi.Controllers
                 return NotFound();
             }
         }
-        
-        // GET: Rooms/Details/5
+
+        /// <summary>
+        /// Récupère les détails d'une salle spécifique.
+        /// </summary>
+        /// <param name="id">L'identifiant de la salle.</param>
+        /// <returns>Retourne les détails de la salle.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -57,10 +72,11 @@ namespace SynetraApi.Controllers
             return Ok(room);
         }
 
-   
-        // POST: Rooms/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Crée une nouvelle salle.
+        /// </summary>
+        /// <param name="rooms">Les détails de la salle à créer.</param>
+        /// <returns>Retourne la salle créée si le modèle est valide.</returns>
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Name,RoomsId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Room rooms)
         {
@@ -72,10 +88,12 @@ namespace SynetraApi.Controllers
             return Ok(rooms);
         }
 
-      
-        // POST: Rooms/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Met à jour une salle existante.
+        /// </summary>
+        /// <param name="id">L'identifiant de la salle à mettre à jour.</param>
+        /// <param name="rooms">Les détails mis à jour de la salle.</param>
+        /// <returns>Retourne la salle mise à jour si le modèle est valide.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,RoomsId,IsActive,IsEnable,CreatedDate,UpdatedDate")] Room rooms)
         {
@@ -102,9 +120,11 @@ namespace SynetraApi.Controllers
             return Ok(rooms);
         }
 
-      
-
-        // POST: Rooms/Delete/5
+        /// <summary>
+        /// Supprime une salle spécifique.
+        /// </summary>
+        /// <param name="id">L'identifiant de la salle à supprimer.</param>
+        /// <returns>Retourne OK avec true si la suppression réussit, sinon NotFound.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -118,6 +138,7 @@ namespace SynetraApi.Controllers
             }
             return Ok(true);
         }
+
 
         private bool RoomsExists(int id)
         {
