@@ -78,7 +78,7 @@ namespace SynetraApi.Services
 
         public async Task<List<Computer>> GetComputersAsync()
         {
-            return await _context.Computer.ToListAsync();
+            return await _context.Computer.Where(r => r.IsEnable == true).ToListAsync();
         }
 
         public async Task<Computer> UpdateComputerAsync(int id, Computer updatedComputer)
