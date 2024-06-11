@@ -193,7 +193,7 @@
                                     "name": "Authorization",
                                     "in": "header"
                                 },
-                                value: "Bearer " + accessToken
+                                value: accessToken
                             }
                         };
 
@@ -217,7 +217,6 @@
         setTimeout(function () {
             
             var logo = document.getElementsByClassName('link');
- 
             logo[0].children[0].alt = "Synetra";
             logo[0].children[0].src = "/swagger-ui/asset/logo-with-name.png";
 
