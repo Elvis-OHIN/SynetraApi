@@ -14,5 +14,6 @@ namespace SynetraApi.Services
         Task<bool> DeleteComputerAsync(int id);
         Task<Computer> CreateComputerConnectionAsync(int id , Connection connection);
         Task<Computer> GetComputerConnectionAsync(int id);
+        Task<Computer> GetComputerByConnectionAsync(string connection);
     }
 }

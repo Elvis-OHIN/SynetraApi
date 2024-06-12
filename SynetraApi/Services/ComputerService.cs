@@ -70,6 +70,15 @@ namespace SynetraApi.Services
             return computer;
         }
 
+        public async Task<Computer> GetComputerByConnectionAsync(string connexion)
+        {
+            var computer = _context.Computer
+                .Include(u => u.Connections)
+                .FirstOrDefault(r => r.Connections.FirstOrDefault(c => c.ConnectionID == connexion) != null);
+    
+            return computer;
+        }
+
         public async Task<Computer> GetComputerByIdAsync(int id)
         {
             return await _context.Computer.FindAsync(id);
