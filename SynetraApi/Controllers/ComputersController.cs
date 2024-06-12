@@ -203,6 +203,27 @@ namespace SynetraApi.Controllers
             return Ok(computers);
         }
 
+        /// <summary>
+        /// Récupère un ordinateur par sa connexion.
+        /// </summary>
+        /// <param name="id">L'identifiant de la connexion.</param>
+        /// <returns>Retourne la connexion de la connexion s'il existe, sinon NotFound.</returns>
+        [HttpGet("Statut/{id}")]
+        public async Task<IActionResult> ComputersByConnexionId(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var computers = await _computerService.GetComputerByConnectionAsync(id);
+            if (computers == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(computers);
+        }
 
         /// <summary>
         /// Crée une nouvelle connexion pour un ordinateur.
