@@ -261,6 +261,7 @@ namespace SynetraApi.Migrations
                     FootPrint = table.Column<string>(type: "longtext", nullable: true),
                     GPU = table.Column<string>(type: "longtext", nullable: false),
                     RoomId = table.Column<int>(type: "int", nullable: true),
+                    ParcId = table.Column<int>(type: "int", nullable: true),
                     Statut = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     IsEnable = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -270,6 +271,11 @@ namespace SynetraApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Computer", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Computer_Parc_ParcId",
+                        column: x => x.ParcId,
+                        principalTable: "Parc",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Computer_Room_RoomId",
                         column: x => x.RoomId,
@@ -310,14 +316,18 @@ namespace SynetraApi.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     ComputerId = table.Column<int>(type: "int", nullable: true),
-                    CarteMere = table.Column<string>(type: "longtext", nullable: true),
-                    Type = table.Column<string>(type: "longtext", nullable: false),
-                    MACAddress = table.Column<string>(type: "longtext", nullable: false),
-                    IPAddress = table.Column<string>(type: "longtext", nullable: false),
-                    SubnetMask = table.Column<string>(type: "longtext", nullable: false),
-                    DefaultGateway = table.Column<string>(type: "longtext", nullable: false),
-                    DNServers = table.Column<string>(type: "longtext", nullable: false),
-                    Status = table.Column<string>(type: "longtext", nullable: false)
+                    FootPrint = table.Column<string>(type: "longtext", nullable: true),
+                    Type = table.Column<string>(type: "longtext", nullable: true),
+                    MACAddress = table.Column<string>(type: "longtext", nullable: true),
+                    IPAddress = table.Column<string>(type: "longtext", nullable: true),
+                    SubnetMask = table.Column<string>(type: "longtext", nullable: true),
+                    DefaultGateway = table.Column<string>(type: "longtext", nullable: true),
+                    DNServers = table.Column<string>(type: "longtext", nullable: true),
+                    Status = table.Column<string>(type: "longtext", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsEnable = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -335,6 +345,11 @@ namespace SynetraApi.Migrations
                 table: "Computer",
                 column: "CarteMere",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Computer_ParcId",
+                table: "Computer",
+                column: "ParcId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Computer_RoomId",

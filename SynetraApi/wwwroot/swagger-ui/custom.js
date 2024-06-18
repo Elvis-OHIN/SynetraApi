@@ -193,7 +193,7 @@
                                     "name": "Authorization",
                                     "in": "header"
                                 },
-                                value: accessToken
+                                value: "Bearer " + accessToken
                             }
                         };
 
@@ -204,7 +204,7 @@
                 }
             };
 
-            xhr.open("POST", "/login", true);
+            xhr.open("POST", "/api_elvis/login", true);
             xhr.setRequestHeader("Content-Type", "application/json");
 
             var json = JSON.stringify({ "email": email, "password": password });
@@ -218,7 +218,7 @@
             
             var logo = document.getElementsByClassName('link');
             logo[0].children[0].alt = "Synetra";
-            logo[0].children[0].src = "/swagger-ui/asset/logo-with-name.png";
+            logo[0].children[0].src = "/api_elvis/swagger-ui/asset/logo-with-name.png";
 
             var link = document.querySelector("link[rel*='icon']") || document.createElement('link');;
             document.head.removeChild(link);
@@ -228,14 +228,14 @@
             var linkIcon32 = document.createElement('link');
             linkIcon32.type = 'image/png';
             linkIcon32.rel = 'icon';
-            linkIcon32.href = '/swagger-ui/asset/logo-synetra.png';
+            linkIcon32.href = '/api_elvis/swagger-ui/asset/logo-synetra.png';
             linkIcon32.sizes = '32x32';
             document.getElementsByTagName('head')[0].appendChild(linkIcon32);
 
             var linkIcon16 = document.createElement('link');
             linkIcon16.type = 'image/png';
             linkIcon16.rel = 'icon';
-            linkIcon16.href = '/swagger-ui/asset/logo-synetra.png';
+            linkIcon16.href = '/api_elvis/swagger-ui/asset/logo-synetra.png';
             linkIcon16.sizes = '16x16';
             document.getElementsByTagName('head')[0].appendChild(linkIcon16);  
         });

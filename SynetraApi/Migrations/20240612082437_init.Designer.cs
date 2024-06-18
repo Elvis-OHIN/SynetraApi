@@ -11,15 +11,15 @@ using SynetraApi.Data;
 namespace SynetraApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240522081847_netFootPrint")]
-    partial class netFootPrint
+    [Migration("20240612082437_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -298,9 +298,6 @@ namespace SynetraApi.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<string>("CarteMere")
-                        .HasColumnType("longtext");
 
                     b.Property<int?>("ComputerId")
                         .HasColumnType("int");

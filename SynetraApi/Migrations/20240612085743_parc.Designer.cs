@@ -11,15 +11,15 @@ using SynetraApi.Data;
 namespace SynetraApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240421211340_init")]
-    partial class init
+    [Migration("20240612085743_parc")]
+    partial class parc
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -233,6 +233,9 @@ namespace SynetraApi.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("ParcId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
@@ -246,6 +249,8 @@ namespace SynetraApi.Migrations
 
                     b.HasIndex("CarteMere")
                         .IsUnique();
+
+                    b.HasIndex("ParcId");
 
                     b.HasIndex("RoomId");
 
@@ -294,39 +299,44 @@ namespace SynetraApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("CarteMere")
-                        .HasColumnType("longtext");
-
                     b.Property<int?>("ComputerId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("DNServers")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("DefaultGateway")
-                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FootPrint")
                         .HasColumnType("longtext");
 
                     b.Property<string>("IPAddress")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsEnable")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("MACAddress")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("SubnetMask")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Type")
-                        .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -442,6 +452,9 @@ namespace SynetraApi.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
+                    b.Property<int?>("ParcId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
 
@@ -469,6 +482,8 @@ namespace SynetraApi.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("ParcId");
 
                     b.ToTable("User", (string)null);
                 });
@@ -526,9 +541,15 @@ namespace SynetraApi.Migrations
 
             modelBuilder.Entity("SynetraUtils.Models.DataManagement.Computer", b =>
                 {
+                    b.HasOne("SynetraUtils.Models.DataManagement.Parc", "Parc")
+                        .WithMany("computers")
+                        .HasForeignKey("ParcId");
+
                     b.HasOne("SynetraUtils.Models.DataManagement.Room", "Room")
                         .WithMany()
                         .HasForeignKey("RoomId");
+
+                    b.Navigation("Parc");
 
                     b.Navigation("Room");
                 });
@@ -558,6 +579,15 @@ namespace SynetraApi.Migrations
                     b.Navigation("Parc");
                 });
 
+            modelBuilder.Entity("SynetraUtils.Models.DataManagement.User", b =>
+                {
+                    b.HasOne("SynetraUtils.Models.DataManagement.Parc", "Parc")
+                        .WithMany("users")
+                        .HasForeignKey("ParcId");
+
+                    b.Navigation("Parc");
+                });
+
             modelBuilder.Entity("SynetraUtils.Models.DataManagement.Computer", b =>
                 {
                     b.Navigation("Connections");
@@ -567,7 +597,11 @@ namespace SynetraApi.Migrations
 
             modelBuilder.Entity("SynetraUtils.Models.DataManagement.Parc", b =>
                 {
+                    b.Navigation("computers");
+
                     b.Navigation("rooms");
+
+                    b.Navigation("users");
                 });
 #pragma warning restore 612, 618
         }

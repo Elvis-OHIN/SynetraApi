@@ -16,7 +16,7 @@ namespace SynetraApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -449,6 +449,9 @@ namespace SynetraApi.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
+                    b.Property<int?>("ParcId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
 
@@ -476,6 +479,8 @@ namespace SynetraApi.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("ParcId");
 
                     b.ToTable("User", (string)null);
                 });
@@ -571,6 +576,15 @@ namespace SynetraApi.Migrations
                     b.Navigation("Parc");
                 });
 
+            modelBuilder.Entity("SynetraUtils.Models.DataManagement.User", b =>
+                {
+                    b.HasOne("SynetraUtils.Models.DataManagement.Parc", "Parc")
+                        .WithMany("users")
+                        .HasForeignKey("ParcId");
+
+                    b.Navigation("Parc");
+                });
+
             modelBuilder.Entity("SynetraUtils.Models.DataManagement.Computer", b =>
                 {
                     b.Navigation("Connections");
@@ -583,6 +597,8 @@ namespace SynetraApi.Migrations
                     b.Navigation("computers");
 
                     b.Navigation("rooms");
+
+                    b.Navigation("users");
                 });
 #pragma warning restore 612, 618
         }

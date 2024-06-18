@@ -5,25 +5,25 @@
 namespace SynetraApi.Migrations
 {
     /// <inheritdoc />
-    public partial class idparc : Migration
+    public partial class parc : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
                 name: "ParcId",
-                table: "Computer",
+                table: "User",
                 type: "int",
                 nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Computer_ParcId",
-                table: "Computer",
+                name: "IX_User_ParcId",
+                table: "User",
                 column: "ParcId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Computer_Parc_ParcId",
-                table: "Computer",
+                name: "FK_User_Parc_ParcId",
+                table: "User",
                 column: "ParcId",
                 principalTable: "Parc",
                 principalColumn: "Id");
@@ -33,16 +33,16 @@ namespace SynetraApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Computer_Parc_ParcId",
-                table: "Computer");
+                name: "FK_User_Parc_ParcId",
+                table: "User");
 
             migrationBuilder.DropIndex(
-                name: "IX_Computer_ParcId",
-                table: "Computer");
+                name: "IX_User_ParcId",
+                table: "User");
 
             migrationBuilder.DropColumn(
                 name: "ParcId",
-                table: "Computer");
+                table: "User");
         }
     }
 }
