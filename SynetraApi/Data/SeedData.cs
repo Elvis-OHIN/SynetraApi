@@ -7,25 +7,22 @@ namespace SynetraApi.Data
 {
     public class SeedData
     {
-        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw)
+        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw, string superAdmin , string admin, string testPassword , string testAdmin)
         {
             using (var context = new DataContext(
                 serviceProvider.GetRequiredService<DbContextOptions<DataContext>>()))
             {
-                // For sample purposes seed both with the same password.
-                // Password is set with the following:
-                // dotnet user-secrets set SeedUserPW <pw>
-                // The admin user can do anything
-
                 
-                var superAdminID = await EnsureUser(serviceProvider, testUserPw, "superadmin@synetra.com");
+                var superAdminID = await EnsureUser(serviceProvider, testUserPw, superAdmin,0);
                 await EnsureRole(serviceProvider, superAdminID, Constants.UserSuperAdminRole);
 
-                // allowed user can create and edit contacts that they create
-                var adminID = await EnsureUser(serviceProvider, testUserPw, "admin@3il.com");
+                SeedDB(context);
+
+                var adminID = await EnsureUser(serviceProvider, testUserPw, admin, 1);
                 await EnsureRole(serviceProvider, adminID, Constants.UserAdminRole);
 
-               SeedDB(context);
+                var adminTestId = await EnsureUser(serviceProvider, testPassword, testAdmin, 2);
+                await EnsureRole(serviceProvider, adminTestId, Constants.UserAdminRole);
             }
         }
         public static void SeedDB(DataContext context)
@@ -41,6 +38,8 @@ namespace SynetraApi.Data
                 new Parc { Name = "3iL Limoges", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now }
              );
 
+            context.SaveChanges();
+
             context.Room.AddRange(
                 new Room { Name = "Salle 101", ParcId = 1, IsActive = true, IsEnable = true , CreatedDate = DateTime.Now },
                 new Room { Name = "Salle 102", ParcId = 1, IsActive = true, IsEnable = true , CreatedDate = DateTime.Now },
@@ -49,19 +48,22 @@ namespace SynetraApi.Data
                 new Room { Name = "Salle 301", ParcId = 3, IsActive = true, IsEnable = true, CreatedDate = DateTime.Now },
                 new Room { Name = "Salle 302", ParcId = 3, IsActive = true, IsEnable = true, CreatedDate = DateTime.Now }
             );
+
+            context.SaveChanges();
+
             context.Computer.AddRange(
-                new Computer { Name = "Ordinateur A1", IDProduct = "12345", OperatingSystem = "Windows 10", Os = "Windows", CarteMere = "CarteMere A1", GPU = "GPU A1", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now, RoomId = 1 },
-                new Computer { Name = "Ordinateur A2", IDProduct = "12346", OperatingSystem = "Windows 10", Os = "Windows", CarteMere = "CarteMere A2", GPU = "GPU A2", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now, RoomId = 1 },
-                new Computer { Name = "Ordinateur B1", IDProduct = "22345", OperatingSystem = "Ubuntu 20.04", Os = "Linux", CarteMere = "CarteMere B1", GPU = "GPU B1", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now, RoomId = 3 },
-                new Computer { Name = "Ordinateur B2", IDProduct = "22346", OperatingSystem = "Ubuntu 20.04", Os = "Linux", CarteMere = "CarteMere B2", GPU = "GPU B2", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now, RoomId = 3 },
-                new Computer { Name = "Ordinateur C1", IDProduct = "32345", OperatingSystem = "macOS Big Sur", Os = "Mac", CarteMere = "CarteMere C1", GPU = "GPU C1", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now,  RoomId = 5 },
-                new Computer { Name = "Ordinateur C2", IDProduct = "32346", OperatingSystem = "macOS Big Sur", Os = "Mac", CarteMere = "CarteMere C2", GPU = "GPU C2", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now, RoomId = 5 }
+                new Computer { Name = "Ordinateur A1", IDProduct = "12345", OperatingSystem = "Windows 10", Os = "Windows", CarteMere = "CarteMere A1", GPU = "GPU A1", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now, RoomId = 1 , ParcId = 1 },
+                new Computer { Name = "Ordinateur A2", IDProduct = "12346", OperatingSystem = "Windows 10", Os = "Windows", CarteMere = "CarteMere A2", GPU = "GPU A2", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now, RoomId = 1 , ParcId = 1 },
+                new Computer { Name = "Ordinateur B1", IDProduct = "22345", OperatingSystem = "Ubuntu 20.04", Os = "Linux", CarteMere = "CarteMere B1", GPU = "GPU B1", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now, RoomId = 3 , ParcId = 2 },
+                new Computer { Name = "Ordinateur B2", IDProduct = "22346", OperatingSystem = "Ubuntu 20.04", Os = "Linux", CarteMere = "CarteMere B2", GPU = "GPU B2", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now, RoomId = 3, ParcId = 2 },
+                new Computer { Name = "Ordinateur C1", IDProduct = "32345", OperatingSystem = "macOS Big Sur", Os = "Mac", CarteMere = "CarteMere C1", GPU = "GPU C1", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now,  RoomId = 5, ParcId = 3 },
+                new Computer { Name = "Ordinateur C2", IDProduct = "32346", OperatingSystem = "macOS Big Sur", Os = "Mac", CarteMere = "CarteMere C2", GPU = "GPU C2", IsActive = true, IsEnable = true, CreatedDate = DateTime.Now, RoomId = 5, ParcId = 3 }
           );
             context.SaveChanges();
         }
 
         private static async Task<int> EnsureUser(IServiceProvider serviceProvider,
-                                                    string testUserPw, string UserName)
+                                                    string testUserPw, string UserName, int parcId)
         {
 
             var userManager = serviceProvider.GetService<UserManager<User>>();
@@ -77,12 +79,17 @@ namespace SynetraApi.Data
                 user = new User
                 {
                     UserName = UserName,
+                    Email = UserName,
                     EmailConfirmed = true,
                     IsActive = true,
                     IsEnable = true,
                     CreatedDate = DateTime.Now, 
 
                 };
+                if (parcId > 0)
+                {
+                    user.ParcId = parcId;
+                }
                 await userManager.CreateAsync(user, testUserPw);
             }
 

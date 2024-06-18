@@ -46,7 +46,6 @@ builder.Services.AddSwaggerGen(options =>
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
-        Scheme = "bearer"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -86,6 +85,7 @@ builder.Services.AddCors(policy =>
 
 var app = builder.Build();
 
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -96,21 +96,31 @@ using (var scope = app.Services.CreateScope())
     // dotnet user-secrets set SeedUserPW <pw>
 
     var testUserPw = builder.Configuration.GetValue<string>("SeedUserPW");
-
-    await SeedData.Initialize(services, testUserPw);
+    var admin = builder.Configuration.GetValue<string>("SeedAdminEmail");
+    var superAdmin = builder.Configuration.GetValue<string>("SeedSuperAdminEmail");
+    var testAdmin = builder.Configuration.GetValue<string>("SeedTestAdminEmail");
+    var SeedTestAdminPW = builder.Configuration.GetValue<string>("SeedTestAdminPW");
+    await SeedData.Initialize(services, testUserPw,superAdmin,admin, SeedTestAdminPW , testAdmin);
 }
 
 app.UseCors("_myAllowSpecificOrigins");
 // Configure the HTTP request pipeline.
 
-app.UseSwagger();
+app.UseSwagger(options =>
+{ 
+    options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+    {
+        var basePath = "/api_elvis";
+        swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"https://{httpReq.Host.Value}{basePath}" } };
+    });
+ });
 
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "SynetraApi v1");
+    options.SwaggerEndpoint("/api_elvis/swagger/v1/swagger.json", "SynetraApi v1");
     options.RoutePrefix = "docs";
-    options.InjectStylesheet("/swagger-ui/custom.css");
-    options.InjectJavascript("/swagger-ui/custom.js");
+    options.InjectStylesheet("/api_elvis/swagger-ui/custom.css");
+    options.InjectJavascript("/api_elvis/swagger-ui/custom.js");
     options.DocumentTitle = "Synetra API";
     options.ConfigObject.DocExpansion = DocExpansion.List;
  
